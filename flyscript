@@ -18,11 +18,7 @@ local flyButton
 local plusButton
 local minusButton
 local speedLabel
-local minButton
 local closeButton
-local originalSize
-local originalPositions = {}
-local minimized = false
 
 local function createGui()
 	if screenGui then screenGui:Destroy() end
@@ -47,6 +43,21 @@ local function createGui()
 	title.TextColor3 = Color3.fromRGB(255,255,255)
 	title.TextScaled = true
 	title.Font = Enum.Font.GothamBold
+
+	-- 🔴 Close gomb (a minimalizáló helyén)
+	closeButton = Instance.new("TextButton", mainFrame)
+	closeButton.Text = "X"
+	closeButton.Size = UDim2.new(0.2, 0, 0, 25)
+	closeButton.Position = UDim2.new(0.8, 0, 0, 0)
+	closeButton.BackgroundColor3 = Color3.fromRGB(120, 40, 40)
+	closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+	closeButton.Font = Enum.Font.GothamBold
+	closeButton.TextScaled = true
+	Instance.new("UICorner", closeButton).CornerRadius = UDim.new(0, 8)
+
+	closeButton.MouseButton1Click:Connect(function()
+		screenGui:Destroy()
+	end)
 
 	flyButton = Instance.new("TextButton", mainFrame)
 	flyButton.Text = "Toggle Fly"
@@ -86,60 +97,6 @@ local function createGui()
 	speedLabel.TextColor3 = Color3.fromRGB(255,255,255)
 	speedLabel.TextScaled = true
 	speedLabel.Font = Enum.Font.GothamBold
-
-	-- 🔽 Minimalizáló gomb
-	minButton = Instance.new("TextButton", mainFrame)
-	minButton.Text = "_"
-	minButton.Size = UDim2.new(0.2,0,0,25)
-	minButton.Position = UDim2.new(0.8,0,0,0)
-	minButton.BackgroundColor3 = Color3.fromRGB(70,70,70)
-	minButton.TextColor3 = Color3.fromRGB(255,255,255)
-	minButton.Font = Enum.Font.Gotham
-	minButton.TextScaled = true
-	Instance.new("UICorner", minButton).CornerRadius = UDim.new(0,8)
-
-	-- 🔽 Bezáró gomb (új)
-	closeButton = Instance.new("TextButton", mainFrame)
-	closeButton.Text = "X"
-	closeButton.Size = UDim2.new(0.2, 0, 0, 25)
-	closeButton.Position = UDim2.new(0.6, 0, 0, 0)
-	closeButton.BackgroundColor3 = Color3.fromRGB(120, 40, 40)
-	closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-	closeButton.Font = Enum.Font.GothamBold
-	closeButton.TextScaled = true
-	Instance.new("UICorner", closeButton).CornerRadius = UDim.new(0, 8)
-
-	closeButton.MouseButton1Click:Connect(function()
-		screenGui:Destroy()
-	end)
-
-	originalSize = mainFrame.Size
-	originalPositions = {}
-	for _, v in pairs(mainFrame:GetChildren()) do
-		if v:IsA("GuiObject") and v ~= minButton and v ~= closeButton then
-			originalPositions[v] = v.Position
-		end
-	end
-
-	minButton.MouseButton1Click:Connect(function()
-		minimized = not minimized
-		if minimized then
-			mainFrame.Size = UDim2.new(originalSize.X.Scale, originalSize.X.Offset, 0, 30)
-			for _, v in pairs(mainFrame:GetChildren()) do
-				if v ~= minButton and v ~= closeButton and not v:IsA("UICorner") then
-					v.Visible = false
-				end
-			end
-		else
-			mainFrame.Size = originalSize
-			for v, pos in pairs(originalPositions) do
-				if v and v.Parent then
-					v.Position = pos
-					v.Visible = true
-				end
-			end
-		end
-	end)
 
 	flyButton.MouseButton1Click:Connect(function()
 		if flying then stopFly() else startFly() end
