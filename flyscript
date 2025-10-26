@@ -16,7 +16,6 @@ local screenGui
 local mainFrame
 local flyButton
 local plusButton
-local minusButton
 local speedLabel
 local closeButton
 
