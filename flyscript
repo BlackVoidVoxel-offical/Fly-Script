@@ -20,8 +20,38 @@ local minusButton
 local speedLabel
 local closeButton
 
+local function stopFly()
+	local char = LocalPlayer.Character
+	if not char then return end
+	local hrp = char:FindFirstChild("HumanoidRootPart")
+	local humanoid = char:FindFirstChildWhichIsA("Humanoid")
+	if not hrp or not humanoid then return end
+	humanoid.PlatformStand = false
+	if bodyGyro then bodyGyro:Destroy() end
+	if bodyVelocity then bodyVelocity:Destroy() end
+	flying = false
+end
+
+local function startFly()
+	local char = LocalPlayer.Character
+	if not char then return end
+	local hrp = char:FindFirstChild("HumanoidRootPart")
+	local humanoid = char:FindFirstChildWhichIsA("Humanoid")
+	if not hrp or not humanoid then return end
+	humanoid.PlatformStand = true
+	bodyGyro = Instance.new("BodyGyro", hrp)
+	bodyGyro.MaxTorque = Vector3.new(1e5,1e5,1e5)
+	bodyGyro.P = 1e4
+	bodyGyro.CFrame = hrp.CFrame
+	bodyVelocity = Instance.new("BodyVelocity", hrp)
+	bodyVelocity.MaxForce = Vector3.new(1e5,1e5,1e5)
+	bodyVelocity.Velocity = Vector3.new(0,0,0)
+	flying = true
+end
+
 local function createGui()
 	if screenGui then screenGui:Destroy() end
+
 	screenGui = Instance.new("ScreenGui")
 	screenGui.Name = "OPFlyGUI"
 	screenGui.ResetOnSpawn = false
@@ -44,7 +74,7 @@ local function createGui()
 	title.TextScaled = true
 	title.Font = Enum.Font.GothamBold
 
-	-- 🔴 Close gomb (a minimalizáló helyén)
+	-- ❌ Csak X gomb (min nélkül)
 	closeButton = Instance.new("TextButton", mainFrame)
 	closeButton.Text = "X"
 	closeButton.Size = UDim2.new(0.2, 0, 0, 25)
@@ -56,6 +86,7 @@ local function createGui()
 	Instance.new("UICorner", closeButton).CornerRadius = UDim.new(0, 8)
 
 	closeButton.MouseButton1Click:Connect(function()
+		stopFly()
 		screenGui:Destroy()
 	end)
 
@@ -111,35 +142,6 @@ local function createGui()
 		flySpeed = math.max(flySpeed - speedIncrement, minSpeed)
 		speedLabel.Text = "Speed: "..flySpeed
 	end)
-end
-
-function startFly()
-	local char = LocalPlayer.Character
-	if not char then return end
-	local hrp = char:FindFirstChild("HumanoidRootPart")
-	local humanoid = char:FindFirstChildWhichIsA("Humanoid")
-	if not hrp or not humanoid then return end
-	humanoid.PlatformStand = true
-	bodyGyro = Instance.new("BodyGyro", hrp)
-	bodyGyro.MaxTorque = Vector3.new(1e5,1e5,1e5)
-	bodyGyro.P = 1e4
-	bodyGyro.CFrame = hrp.CFrame
-	bodyVelocity = Instance.new("BodyVelocity", hrp)
-	bodyVelocity.MaxForce = Vector3.new(1e5,1e5,1e5)
-	bodyVelocity.Velocity = Vector3.new(0,0,0)
-	flying = true
-end
-
-function stopFly()
-	local char = LocalPlayer.Character
-	if not char then return end
-	local hrp = char:FindFirstChild("HumanoidRootPart")
-	local humanoid = char:FindFirstChildWhichIsA("Humanoid")
-	if not hrp or not humanoid then return end
-	humanoid.PlatformStand = false
-	if bodyGyro then bodyGyro:Destroy() end
-	if bodyVelocity then bodyVelocity:Destroy() end
-	flying = false
 end
 
 RunService.RenderStepped:Connect(function()
