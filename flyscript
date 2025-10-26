@@ -19,6 +19,7 @@ local plusButton
 local minusButton
 local speedLabel
 local minButton
+local closeButton
 local originalSize
 local originalPositions = {}
 local minimized = false
@@ -86,6 +87,7 @@ local function createGui()
 	speedLabel.TextScaled = true
 	speedLabel.Font = Enum.Font.GothamBold
 
+	-- 🔽 Minimalizáló gomb
 	minButton = Instance.new("TextButton", mainFrame)
 	minButton.Text = "_"
 	minButton.Size = UDim2.new(0.2,0,0,25)
@@ -96,10 +98,25 @@ local function createGui()
 	minButton.TextScaled = true
 	Instance.new("UICorner", minButton).CornerRadius = UDim.new(0,8)
 
+	-- 🔽 Bezáró gomb (új)
+	closeButton = Instance.new("TextButton", mainFrame)
+	closeButton.Text = "X"
+	closeButton.Size = UDim2.new(0.2, 0, 0, 25)
+	closeButton.Position = UDim2.new(0.6, 0, 0, 0)
+	closeButton.BackgroundColor3 = Color3.fromRGB(120, 40, 40)
+	closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+	closeButton.Font = Enum.Font.GothamBold
+	closeButton.TextScaled = true
+	Instance.new("UICorner", closeButton).CornerRadius = UDim.new(0, 8)
+
+	closeButton.MouseButton1Click:Connect(function()
+		screenGui:Destroy()
+	end)
+
 	originalSize = mainFrame.Size
 	originalPositions = {}
 	for _, v in pairs(mainFrame:GetChildren()) do
-		if v:IsA("GuiObject") and v ~= minButton then
+		if v:IsA("GuiObject") and v ~= minButton and v ~= closeButton then
 			originalPositions[v] = v.Position
 		end
 	end
@@ -109,7 +126,7 @@ local function createGui()
 		if minimized then
 			mainFrame.Size = UDim2.new(originalSize.X.Scale, originalSize.X.Offset, 0, 30)
 			for _, v in pairs(mainFrame:GetChildren()) do
-				if v ~= minButton and not v:IsA("UICorner") then
+				if v ~= minButton and v ~= closeButton and not v:IsA("UICorner") then
 					v.Visible = false
 				end
 			end
@@ -192,21 +209,5 @@ RunService.RenderStepped:Connect(function()
 	end
 end)
 
-LocalPlayer.CharacterAdded:Connect(function()
-	wait(1)
-	createGui()
-end)
-
+-- Indítja a GUI-t
 createGui()
-
-local gui = game.Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("HomeGui") -- a te GUI-d neve
-
-local closeButton = Instance.new("TextButton")
-closeButton.Size = UDim2.new(0, 100, 0, 50)
-closeButton.Position = UDim2.new(0.9, 0, 0, 10) -- jobb felső sarok
-closeButton.Text = "Close"
-closeButton.Parent = gui
-
-closeButton.MouseButton1Click:Connect(function()
-    gui.Enabled = false -- vagy gui.Visible = false, GUI típusától függően
-end)
