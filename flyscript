@@ -110,16 +110,6 @@ local function createGui()
 	plusButton.TextScaled = true
 	Instance.new("UICorner", plusButton).CornerRadius = UDim.new(0,8)
 
-	minusButton = Instance.new("TextButton", mainFrame)
-	minusButton.Text = "-"
-	minusButton.Size = UDim2.new(0.2,0,0,30)
-	minusButton.Position = UDim2.new(0.7,0,0.55,0)
-	minusButton.BackgroundColor3 = Color3.fromRGB(50,50,50)
-	minusButton.TextColor3 = Color3.fromRGB(255,255,255)
-	minusButton.Font = Enum.Font.Gotham
-	minusButton.TextScaled = true
-	Instance.new("UICorner", minusButton).CornerRadius = UDim.new(0,8)
-
 	speedLabel = Instance.new("TextLabel", mainFrame)
 	speedLabel.Text = "Speed: "..flySpeed
 	speedLabel.Size = UDim2.new(1,0,0,20)
@@ -138,11 +128,7 @@ local function createGui()
 		speedLabel.Text = "Speed: "..flySpeed
 	end)
 
-	minusButton.MouseButton1Click:Connect(function()
-		flySpeed = math.max(flySpeed - speedIncrement, minSpeed)
-		speedLabel.Text = "Speed: "..flySpeed
-	end)
-end
+	
 
 RunService.RenderStepped:Connect(function()
 	if flying then
