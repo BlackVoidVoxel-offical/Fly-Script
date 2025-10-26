@@ -198,3 +198,15 @@ LocalPlayer.CharacterAdded:Connect(function()
 end)
 
 createGui()
+
+local gui = game.Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("HomeGui") -- a te GUI-d neve
+
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 100, 0, 50)
+closeButton.Position = UDim2.new(0.9, 0, 0, 10) -- jobb felső sarok
+closeButton.Text = "Close"
+closeButton.Parent = gui
+
+closeButton.MouseButton1Click:Connect(function()
+    gui.Enabled = false -- vagy gui.Visible = false, GUI típusától függően
+end)
