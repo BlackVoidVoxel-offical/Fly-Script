@@ -20,6 +20,8 @@ local minusButton
 local speedLabel
 local closeButton
 
+local lastSpaceTime = 0
+
 local function stopFly()
 	local char = LocalPlayer.Character
 	if not char then return end
@@ -32,7 +34,6 @@ local function stopFly()
 	flying = false
 end
 
--- ✈️ Fly indítása
 local function startFly()
 	local char = LocalPlayer.Character
 	if not char then return end
@@ -50,9 +51,16 @@ local function startFly()
 	flying = true
 end
 
+local function toggleFly()
+	if flying then
+		stopFly()
+	else
+		startFly()
+	end
+end
+
 local function createGui()
 	if screenGui then screenGui:Destroy() end
-
 	screenGui = Instance.new("ScreenGui")
 	screenGui.Name = "OPFlyGUI"
 	screenGui.ResetOnSpawn = false
@@ -129,15 +137,11 @@ local function createGui()
 	speedLabel.TextScaled = true
 	speedLabel.Font = Enum.Font.GothamBold
 
-	flyButton.MouseButton1Click:Connect(function()
-		if flying then stopFly() else startFly() end
-	end)
-
+	flyButton.MouseButton1Click:Connect(toggleFly)
 	plusButton.MouseButton1Click:Connect(function()
 		flySpeed = math.min(flySpeed + speedIncrement, maxSpeed)
 		speedLabel.Text = "Speed: "..flySpeed
 	end)
-
 	minusButton.MouseButton1Click:Connect(function()
 		flySpeed = math.max(flySpeed - speedIncrement, minSpeed)
 		speedLabel.Text = "Speed: "..flySpeed
@@ -165,6 +169,21 @@ RunService.RenderStepped:Connect(function()
 			bodyVelocity.Velocity = Vector3.new(0,0,0)
 		end
 		bodyGyro.CFrame = CFrame.new(hrp.Position, hrp.Position + Camera.CFrame.LookVector)
+	end
+end)
+
+UserInputService.InputBegan:Connect(function(input, processed)
+	if processed then return end
+	if input.KeyCode == Enum.KeyCode.R then
+		toggleFly()
+	elseif input.KeyCode == Enum.KeyCode.Space then
+		local now = tick()
+		if now - lastSpaceTime <= 2 then
+			toggleFly()
+			lastSpaceTime = 0
+		else
+			lastSpaceTime = now
+		end
 	end
 end)
 
