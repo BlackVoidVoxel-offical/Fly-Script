@@ -176,7 +176,7 @@ UserInputService.InputBegan:Connect(function(input, processed)
 	if processed then return end
 	if input.KeyCode == Enum.KeyCode.Space then
 		local now = tick()
-		if now - lastSpaceTime <= 2 then
+		if now - lastSpaceTime <= 0.5 then
 			toggleFly()
 			lastSpaceTime = 0
 		else
