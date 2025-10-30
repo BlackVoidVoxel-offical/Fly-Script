@@ -20,7 +20,6 @@ local minusButton
 local speedLabel
 local closeButton
 
--- 🛑 Fly leállítása
 local function stopFly()
 	local char = LocalPlayer.Character
 	if not char then return end
@@ -51,7 +50,6 @@ local function startFly()
 	flying = true
 end
 
--- 🧩 GUI létrehozása
 local function createGui()
 	if screenGui then screenGui:Destroy() end
 
@@ -77,7 +75,6 @@ local function createGui()
 	title.TextScaled = true
 	title.Font = Enum.Font.GothamBold
 
-	-- ❌ Csak X gomb (a min helyett)
 	closeButton = Instance.new("TextButton", mainFrame)
 	closeButton.Text = "X"
 	closeButton.Size = UDim2.new(0.2, 0, 0, 25)
@@ -147,7 +144,6 @@ local function createGui()
 	end)
 end
 
--- 🎮 Mozgás frissítése minden frame-ben
 RunService.RenderStepped:Connect(function()
 	if flying then
 		local char = LocalPlayer.Character
@@ -172,5 +168,4 @@ RunService.RenderStepped:Connect(function()
 	end
 end)
 
--- 🚀 GUI indítása
 createGui()
