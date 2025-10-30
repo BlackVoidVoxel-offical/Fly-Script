@@ -20,8 +20,6 @@ local minusButton
 local speedLabel
 local closeButton
 
-local lastSpaceTime = 0
-
 local function stopFly()
 	local char = LocalPlayer.Character
 	if not char then return end
@@ -51,16 +49,9 @@ local function startFly()
 	flying = true
 end
 
-local function toggleFly()
-	if flying then
-		stopFly()
-	else
-		startFly()
-	end
-end
-
 local function createGui()
 	if screenGui then screenGui:Destroy() end
+
 	screenGui = Instance.new("ScreenGui")
 	screenGui.Name = "OPFlyGUI"
 	screenGui.ResetOnSpawn = false
@@ -137,11 +128,15 @@ local function createGui()
 	speedLabel.TextScaled = true
 	speedLabel.Font = Enum.Font.GothamBold
 
-	flyButton.MouseButton1Click:Connect(toggleFly)
+	flyButton.MouseButton1Click:Connect(function()
+		if flying then stopFly() else startFly() end
+	end)
+
 	plusButton.MouseButton1Click:Connect(function()
 		flySpeed = math.min(flySpeed + speedIncrement, maxSpeed)
 		speedLabel.Text = "Speed: "..flySpeed
 	end)
+
 	minusButton.MouseButton1Click:Connect(function()
 		flySpeed = math.max(flySpeed - speedIncrement, minSpeed)
 		speedLabel.Text = "Speed: "..flySpeed
@@ -182,6 +177,5 @@ UserInputService.InputBegan:Connect(function(input, processed)
 		end
 	end
 end)
-
 
 createGui()
